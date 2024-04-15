@@ -1,0 +1,127 @@
+definitions:
+  model.ClientCredential:
+    properties:
+      apiKey:
+        type: string
+    type: object
+  model.TryPayUserOpRequest:
+    properties:
+      extra: {}
+      force_entrypoint_address:
+        type: string
+      force_network:
+        $ref: '#/definitions/types.Network'
+      force_strategy_id:
+        type: string
+      force_token:
+        type: string
+      user_operation:
+        additionalProperties: {}
+        type: object
+    type: object
+  types.Network:
+    enum:
+    - ethereum
+    - sepolia
+    - arbitrum
+    - arb-sepolia
+    type: string
+    x-enum-varnames:
+    - Ethereum
+    - Sepolia
+    - Arbitrum
+    - ArbTest
+info:
+  contact:
+    name: AAStar Support
+    url: https://aastar.xyz
+paths:
+  /api/auth:
+    post:
+      consumes:
+      - application/json
+      description: Get AccessToken By ApiKey
+      parameters:
+      - description: AccessToken Model
+        in: body
+        name: credential
+        required: true
+        schema:
+          $ref: '#/definitions/model.ClientCredential'
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Auth
+  /api/healthz:
+    get:
+      consumes:
+      - application/json
+      description: Get Healthz
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Healthz
+  /api/v1/get-support-entrypoint:
+    get:
+      consumes:
+      - application/json
+      description: get the support entrypoint
+      parameters:
+      - description: network
+        in: query
+        name: network
+        type: string
+      responses:
+        "200":
+          description: OK
+      security:
+      - JWT: []
+      tags:
+      - Sponsor
+  /api/v1/get-support-strategy:
+    get:
+      consumes:
+      - application/json
+      description: get the support strategy
+      parameters:
+      - description: network
+        in: query
+        name: network
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - JWT: []
+      tags:
+      - Sponsor
+  /api/v1/try-pay-user-operation:
+    post:
+      consumes:
+      - application/json
+      description: sponsor the userOp
+      parameters:
+      - description: UserOp Request
+        in: body
+        name: tryPay
+        required: true
+        schema:
+          $ref: '#/definitions/model.TryPayUserOpRequest'
+      responses:
+        "200":
+          description: OK
+      security:
+      - JWT: []
+      tags:
+      - Sponsor
+securityDefinitions:
+  JWT:
+    description: Type 'Bearer \<TOKEN\>' to correctly set the AccessToken
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
